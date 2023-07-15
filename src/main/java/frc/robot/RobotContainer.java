@@ -10,6 +10,15 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -18,9 +27,20 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final WPI_VictorSPX frontLeft = new WPI_VictorSPX(1);
+  private final WPI_VictorSPX frontRight = new WPI_VictorSPX(2);
+  private final WPI_VictorSPX backLeft = new WPI_VictorSPX(3);
+  private final WPI_VictorSPX backRight = new WPI_VictorSPX(4);
+  private MotorControllerGroup leftSideGroup = new MotorControllerGroup(frontLeft, backLeft);
+  private MotorControllerGroup rightSideGroup = new MotorControllerGroup(frontRight, backRight);
+  private DifferentialDrive m_robotDrive;
+  private final XboxController m_controller = new XboxController(0);
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+
+  rightSideGroup.setInverted(true);
+  m_robotDrive = new DifferentialDrive(leftSideGroup, rightSideGroup);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -36,6 +56,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {}
 
+  m_robotDrive.arcadeDrive(m_controller.getLeftY()/1.5, -m_controller.getLeftX()/1.5, true);
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
