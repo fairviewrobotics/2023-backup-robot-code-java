@@ -21,14 +21,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
  * project.
  */
 public class Robot extends TimedRobot {  
-  private final WPI_VictorSPX frontLeft = new WPI_VictorSPX(1);
-  private final WPI_VictorSPX frontRight = new WPI_VictorSPX(2);
-  private final WPI_VictorSPX backLeft = new WPI_VictorSPX(3);
-  private final WPI_VictorSPX backRight = new WPI_VictorSPX(4);
-  private MotorControllerGroup leftSideGroup = new MotorControllerGroup(frontLeft, backLeft);
-  private MotorControllerGroup rightSideGroup = new MotorControllerGroup(frontRight, backRight);
-  private DifferentialDrive m_robotDrive;
-  private final XboxController m_controller = new XboxController(0);
+
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -42,8 +35,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    rightSideGroup.setInverted(true);
-    m_robotDrive = new DifferentialDrive(leftSideGroup, rightSideGroup);
+
   }
 
   /**
@@ -98,7 +90,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_robotDrive.arcadeDrive(m_controller.getLeftY()/1.5, -m_controller.getLeftX()/1.5, true);
   }
 
   @Override
