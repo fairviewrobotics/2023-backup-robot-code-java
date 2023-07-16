@@ -6,7 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -23,17 +25,12 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final WPI_VictorSPX frontLeft = new WPI_VictorSPX(1);
-  private final WPI_VictorSPX frontRight = new WPI_VictorSPX(2);
-  private final WPI_VictorSPX backLeft = new WPI_VictorSPX(3);
-  private final WPI_VictorSPX backRight = new WPI_VictorSPX(4);
-  private MotorControllerGroup leftSideGroup = new MotorControllerGroup(frontLeft, backLeft);
-  private MotorControllerGroup rightSideGroup = new MotorControllerGroup(frontRight, backRight);
-  private DifferentialDrive m_robotDrive;
-  private final XboxController m_controller = new XboxController(0);
+
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  XboxController m_controller = new XboxController(0);
 
 
 
@@ -41,8 +38,14 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    rightSideGroup.setInverted(true);
-    m_robotDrive = new DifferentialDrive(leftSideGroup, rightSideGroup);
+
+    m_driveSubsystem.setDefaultCommand(
+            Commands.run(
+                    () ->
+                            m_driveSubsystem.arcadeDrive(m_controller.getLeftY(), -m_controller.getRightX()),m_driveSubsystem));
+
+
+
   }
 
   /**
@@ -52,8 +55,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {}
-
-  m_robotDrive.arcadeDrive(m_controller.getLeftY()/1.5, -m_controller.getLeftX()/1.5, true);
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
